@@ -11,10 +11,5 @@ public class MemberInfoService{
 	@Autowired
 	private MemberInfoMapper memberInfoMapper;
 	
-	//로그인 체크 메서드
-	public MemberInfoDTO loginCheck(String memberId, String password) {
 		
-		return memberInfoMapper.findByIdAndPassword(memberId, password);
-	}
-	
 }

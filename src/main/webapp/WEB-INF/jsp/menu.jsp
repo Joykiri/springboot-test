@@ -11,49 +11,48 @@ body {
 
     margin: 0;
     font-family: Arial, sans-serif;
+    background-color: #ffffff;
+}
+
+/* 전체 중앙 정렬 */
+.wrapper {
+    width: 520px;   /* ★ 게임화면과 동일 크기 */
+    margin: 80px auto;
+	border: 1px solid #333;
 }
 
 /* 상단 제목바 */
 .title-bar {
-
-    height: 50px;
-    background-color: #6495ED;
-
-    color: white;
-
+    height: 40px;
+    background-color: #FFF064;
+    color: black;
     display: flex;
+    justify-content: center;  /* ★ 가운데 정렬 */
     align-items: center;
-
-    padding-left: 15px;
-
     font-size: 18px;
-    font-weight: bold;
+    border-bottom: 1px solid #333;
 }
 
-/* 본문 프레임 */
-.main-frame {
+/* 메뉴 영역 */
+.menu-area {
 
-    height: calc(100vh - 50px);
-
-    border-top: 1px solid #333;
-
-    padding: 20px;
+    padding: 50px 0;
+    text-align: center;
 }
 
-/* 메뉴 버튼 */
+/* 버튼 */
 .menu-btn {
-
     width: 200px;
-
     height: 50px;
-
     font-size: 16px;
-
     background-color: #B0C4DE;
-
     border: 1px solid #333;
-
     cursor: pointer;
+    margin: 10px 0;
+}
+
+.menu-btn:hover {
+    background-color: #91B9F5;
 }
 
 </style>
@@ -62,30 +61,41 @@ body {
 
 <body>
 
-<!-- 제목바 -->
-<div class="title-bar">
+<div class="wrapper">
 
-    システムメニュー
+    <!-- 제목 -->
+    <div class="title-bar">
+        システムメニュー
+    </div>
+	
+	<!-- 이름 (박스 밖 오른쪽 위) -->
+	<div style="position:absolute; top:-25px; right:0;">
+	    ${sessionScope.user_name} さん
+	</div>
+    <!-- 버튼 영역 -->
+    <div class="menu-area">
 
-</div>
+        <!-- 게임 이동 -->
+        <a href="/game">
 
-<!-- 본문 프레임 -->
-<div class="main-frame">
+            <button class="menu-btn">
+                数当てゲーム
+            </button>
 
-    <button onclick="location.href='/game'">
+        </a>
 
-        数当てゲーム
+        <br>
 
-    </button>
+        <!-- 로그아웃 -->
+        <a href="/login">
 
-</div>
+            <button class="menu-btn">
+                ログアウト
+            </button>
 
-<!-- 게임 화면 -->
-<div class="menu-area">
+        </a>
 
-    <button onclick="location.href='/game'">
-        数当てゲーム
-    </button>
+    </div>
 
 </div>
 

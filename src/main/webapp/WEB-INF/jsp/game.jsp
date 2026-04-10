@@ -15,7 +15,7 @@ body {
 
 /* 중앙 큰 네모 */
 .container {
-    width: 420px;   /* ← 가로 조금 넓힘 (② 해결) */
+    width: 420px;
     margin: 50px auto;
     border: 1px solid #333;
     background-color: #FFFFFF;
@@ -30,7 +30,6 @@ body {
 
 /* 타이틀 */
 .title-text {
-
     flex: 1;
     background-color: #FFF064;
     display: flex;
@@ -40,19 +39,35 @@ body {
     border-right: 1px solid #333;
 }
 
-/* 로그아웃 */
+/* 로그아웃 영역 */
+.logout-area {
+    width: 100px;
+    position: relative; /* ← 기준점 */
+}
+
+/* 사용자 이름 (로그아웃 바로 위, 박스 밖) */
+.user-name {
+    position: absolute;
+    bottom: 42px;   /* ← 로그아웃 바로 위 */
+    right: 0;
+    font-size: 13px;
+	white-space: nowrap;
+}
+
+/* 로그아웃 버튼 */
 .logout-btn {
     width: 100px;
+    height: 40px;
     background-color: #9BC3FF;
     border: none;
     border-left: 1px solid #333;
     cursor: pointer;
 }
 
-/* 포인트 (① 위로 올림) */
+/* 포인트 */
 .point-area {
     text-align: right;
-    padding: 5px 20px 0 0;  /* 위쪽 여백 줄임 */
+    padding: 5px 20px 0 0;
     font-size: 16px;
 }
 
@@ -78,7 +93,6 @@ body {
     width: 35px;
     height: 35px;
     text-align: center;
-    margin-right: 0; /* 네모끼리는 붙음 */
 }
 
 /* 확인 버튼 */
@@ -90,13 +104,6 @@ body {
     cursor: pointer;
 }
 
-/* 에러 */
-.error-message {
-    color: red;
-    margin-top: 10px;
-    display: none; /* 에러 있을 때만 표시 */
-}
-
 /* 테이블 */
 .result-table {
     margin-top: 20px;
@@ -104,7 +111,6 @@ body {
     width: 100%;
 }
 
-/* 셀 */
 .result-table th,
 .result-table td {
     border: 1px solid #333;
@@ -112,10 +118,9 @@ body {
     text-align: center;
 }
 
-/* 헤더 */
 .result-table th {
     background-color: #78EFAD;
-	font-weight: normal;
+    font-weight: normal;
 }
 
 </style>
@@ -133,9 +138,22 @@ body {
             数当てゲーム
         </div>
 
-        <button class="logout-btn">
-            ログアウト
-        </button>
+        <!-- 로그아웃 영역 -->
+        <div class="logout-area">
+
+            <!-- 이름 (로그아웃 바로 위) -->
+            <div class="user-name">
+                ${sessionScope.user_name} さん
+            </div>
+
+            <!-- 로그아웃 -->
+            <form action="/logout" method="get">
+                <button type="submit" class="logout-btn">
+                    ログアウト
+                </button>
+            </form>
+
+        </div>
 
     </div>
 
@@ -170,13 +188,6 @@ body {
 
         </div>
 
-        <!-- 에러 -->
-        <div class="error-message">
-
-            エラーメッセージ出力
-
-        </div>
-
         <!-- 결과 테이블 -->
         <table class="result-table">
 
@@ -193,9 +204,13 @@ body {
                 <td><%= i %>回目</td>
                 <td></td>
                 <td></td>
+
             </tr>
+
             <% } %>
+
         </table>
+
     </div>
 
 </div>
