@@ -20,7 +20,7 @@ body {
 /* 로그인 박스 */
 .login-box {
 
-    width: 420px;
+    width: 500px;
     border: 1px solid #333;
 }
 
@@ -59,7 +59,7 @@ body {
 
 /* 입력칸 (붙어있게) */
 .input-box input {
-    width: 180px;
+    width: 240px;
     height: 32px;
     border: none;
     outline: none;
@@ -74,8 +74,8 @@ body {
 /* 로그인 버튼 */
 .login-button {
     margin-top: 25px;
-    width: 280px; /* 입력칸 길이 맞춤 */
-    height: 36px;
+    width: 320px; /* 입력칸 길이 맞춤 */
+    height: 45px;
     background-color: #F0FFFF; /* 하늘색 */
     border: 1px solid #333;
     font-size: 18px;

@@ -5,12 +5,17 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.UserDTO;
 import com.example.demo.mapper.UserDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class LoginService {
 
 	@Autowired
 	private UserDAO userDAO;
+	
+	private static final Logger logger =
+		LoggerFactory.getLogger(LoginService.class);
 	
 	public UserDTO login(UserDTO userDTO) {
 		
@@ -25,28 +30,39 @@ public class LoginService {
 				String userName = userDAO.getUserName(userDTO);
 				userDTO.setUser_name(userName);
 				
-				//System.out.println("조회된 이름=");
-			} else {// 108 구분용
+			}else {// 108 구분용
 				
-				String dbPassword = userDAO.getPassword(userDTO);
+				String dbPassword =
+					userDAO.getPassword(userDTO);
 				
 				if(dbPassword == null) {
-					//ID nonexist - 107
-					
+					// ID 없음
+				
 					userDTO.setSuccess(false);
 					userDTO.setErr_msg("会員IDを確認してください。");
+
+					// ⭐ 여기 로그 추가
+					logger.warn("登録された会員情報ではありません。");
 				
 				}else {
-					// PW wrong case - 108
+					// PW 틀림
+				
 					userDTO.setSuccess(false);
 					userDTO.setErr_msg("入力したパスワードが一致しません。");
+
+					// ⭐ 여기 로그 추가
+					logger.warn("パスワードが一致しません。");
 				}
 			}
-		} catch(Exception e) {
+		}catch(Exception e) {
 			
 			userDTO.setSuccess(false);
 			userDTO.setErr_msg("システムエラーが発生しました。");
+
+			// ⭐ 시스템 에러 로그
+			logger.error("システムエラーが発生しました。", e);
 		}
-			return userDTO;
+
+		return userDTO;
 	}
 }
