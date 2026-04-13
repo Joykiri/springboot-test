@@ -1,4 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <html>
 <head>
@@ -123,6 +126,14 @@ body {
     font-weight: normal;
 }
 
+.message-area {
+			    text-align: center;
+			    color: red;
+			    margin-top: 10px;
+			    font-weight: bold;
+			}
+			
+
 </style>
 
 </head>
@@ -147,7 +158,8 @@ body {
             </div>
 
             <!-- 로그아웃 -->
-            <form action="/logout" method="get">
+			<form action="/logout" method="get"
+			      onsubmit="return confirm('ログアウトしますか？')">
                 <button type="submit" class="logout-btn">
                     ログアウト
                 </button>
@@ -160,7 +172,7 @@ body {
     <!-- 현재 포인트 -->
     <div class="point-area">
 
-        現在のポイント　0
+        現在のポイント　${point}
 
     </div>
 
@@ -174,46 +186,87 @@ body {
         </div>
 
         <!-- 입력 -->
+		<form action="/game" method="post">
         <div class="input-row">
 
             入力
 
-            <input type="text" class="number-input">
-            <input type="text" class="number-input">
-            <input type="text" class="number-input">
+            <input type="text" class="number-input"
+			name="input_num0" maxlength="1">
+			
+            <input type="text" class="number-input"
+			name="input_num1" maxlength="1">
+            
+			<input type="text" class="number-input"
+			name="input_num2" maxlength="1">
 
-            <button class="confirm-btn">
+            <button type="submit" class="confirm-btn">
                 確認
             </button>
-
+			
         </div>
+		
+		</form>
+		
 
         <!-- 결과 테이블 -->
-        <table class="result-table">
+		<table class="result-table">
 
-            <tr>
-                <th>入力回数</th>
-                <th>入力数字</th>
-                <th>判定結果</th>
-            </tr>
+		<tr>
+		    <th>入力回数</th>
+		    <th>入力数字</th>
+		    <th>判定結果</th>
+		</tr>
 
-            <% for(int i=1;i<=10;i++){ %>
+		<%
+		List<String> inputList =
+		    (List<String>) request.getAttribute("inputList");
 
-            <tr>
+		List<String> resultList =
+		    (List<String>) request.getAttribute("resultList");
 
-                <td><%= i %>回目</td>
-                <td></td>
-                <td></td>
+		if(inputList == null){
+		    inputList = new ArrayList<>();
+		}
 
-            </tr>
+		if(resultList == null){
+		    resultList = new ArrayList<>();
+		}
 
-            <% } %>
+		for(int i=0;i<10;i++){
+		%>
 
-        </table>
+		<tr>
+
+		<td><%= i+1 %>回目</td>
+
+		<td>
+		<%= (i < inputList.size())
+		        ? inputList.get(i)
+		        : "" %>
+		</td>
+
+		<td>
+		<%= (i < resultList.size())
+		        ? resultList.get(i)
+		        : "" %>
+		</td>
+
+		</tr>
+
+		<%
+		}
+		%>
+
+		</table>
 
     </div>
 
 </div>
-
+<c:if test="${not empty errMsg}">
+<script>
+    alert("${errMsg}");
+</script>
+</c:if>
 </body>
 </html>
