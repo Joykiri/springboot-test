@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -61,9 +62,9 @@ public class GameController {
 		if(
 			(n0.equals("") && n1.equals("") && n2.equals("")) ||
 
-			n0.matches("[A-Za-zぁ-んァ-ヶ]") ||
-			n1.matches("[A-Za-zぁ-んァ-ヶ]") ||
-			n2.matches("[A-Za-zぁ-んァ-ヶ]")
+			n0.matches("[A-Za-zぁ-んァ-ヶ].*") ||
+			n1.matches("[A-Za-zぁ-んァ-ヶ].*") ||
+			n2.matches("[A-Za-zぁ-んァ-ヶ].*")
 		){
 			model.addAttribute("errMsg","数字を入力してください。");
 			return "game";
@@ -220,8 +221,16 @@ public class GameController {
 			);
 			return "game";
 		}
-
+		
+		return "game";
+	}
+	// ⭐ 시스템 에러 로그 (002)
+	@ExceptionHandler(Exception.class)
+	public String handleException(Exception e){
+		System.out.println("[002] システムエラーが発生しました。");
+		e.printStackTrace();
 		return "game";
 	}
 
-}
+	}
+
