@@ -39,7 +39,7 @@ public class LoginController {
         // ID 체크
         // =========================
 
-        // 101 ID 미입력
+        // 101. ID 미입력
         if(memberId == null || memberId.isEmpty()) {
 
             model.addAttribute("err_msg",
@@ -47,7 +47,7 @@ public class LoginController {
             return "login";
         }
 
-        // 102 ID 자리수
+        // 102. ID 자리수 6자리
         if(memberId.length() != 6) {
 
             model.addAttribute("err_msg",
@@ -55,7 +55,7 @@ public class LoginController {
             return "login";
         }
 
-        // 104 ID 형식
+        // 104. ID 형식 - 반각 외 문자
         if(!memberId.matches("^[0-9]+$")) {
 
             model.addAttribute("err_msg",
@@ -67,7 +67,7 @@ public class LoginController {
         // PASSWORD 체크
         // =========================
 
-        // 103 PW 미입력
+        // 103. 비번 미입력 시
         if(password == null || password.isEmpty()) {
 
             model.addAttribute("err_msg",
@@ -75,7 +75,7 @@ public class LoginController {
             return "login";
         }
 
-        // 105 PW 자리수
+        // 105. 비번 자리수 확인
         if(password.length() != 8) {
 
             model.addAttribute("err_msg",
@@ -83,7 +83,7 @@ public class LoginController {
             return "login";
         }
 
-        // 106 PW 형식 재차수정중
+        // 106. 비번 반각 외 형식
         if(!password.matches("^[0-9a-zA-Z]+$")) {
 
             model.addAttribute("err_msg",
@@ -102,11 +102,9 @@ public class LoginController {
 
         if(userDTO.isSuccess()) {
 
-            session.setAttribute("user_id",
-                    userDTO.getUser_id());
+            session.setAttribute("user_id",userDTO.getUser_id());
 
-            session.setAttribute("user_name",
-                    userDTO.getUser_name());
+            session.setAttribute("user_name",userDTO.getUser_name());
 
             return "redirect:/menu";
 

@@ -58,7 +58,10 @@ public class LoginService {
 			
 			userDTO.setSuccess(false);
 			userDTO.setErr_msg("システムエラーが発生しました。");
-
+			
+			
+			// ⭐ 접속 실패 메시지
+		    logger.warn("データベースの接続に失敗しました");
 			// ⭐ 시스템 에러 로그
 			logger.error("システムエラーが発生しました。", e);
 		}

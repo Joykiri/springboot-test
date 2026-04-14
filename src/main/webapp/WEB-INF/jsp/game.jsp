@@ -45,16 +45,16 @@ body {
 /* 로그아웃 영역 */
 .logout-area {
     width: 100px;
-    position: relative; /* ← 기준점 */
+    position: relative;
 }
 
-/* 사용자 이름 (로그아웃 바로 위, 박스 밖) */
+/* 사용자 이름 */
 .user-name {
     position: absolute;
-    bottom: 42px;   /* ← 로그아웃 바로 위 */
+    bottom: 42px;
     right: 0;
     font-size: 13px;
-	white-space: nowrap;
+    white-space: nowrap;
 }
 
 /* 로그아웃 버튼 */
@@ -126,13 +126,16 @@ body {
     font-weight: normal;
 }
 
-.message-area {
-			    text-align: center;
-			    color: red;
-			    margin-top: 10px;
-			    font-weight: bold;
-			}
-			
+/* 입력칸 비활성 색 */
+.number-input:disabled {
+    background-color: #91B9F5;
+}
+
+/* 버튼 비활성 색 */
+.confirm-btn:disabled {
+    background-color: #91B9F5;
+    cursor: default;
+}
 
 </style>
 
@@ -149,27 +152,28 @@ body {
             数当てゲーム
         </div>
 
-        <!-- 로그아웃 영역 -->
         <div class="logout-area">
 
-            <!-- 이름 (로그아웃 바로 위) -->
             <div class="user-name">
                 ${sessionScope.user_name} さん
             </div>
 
-            <!-- 로그아웃 -->
-			<form action="/logout" method="get"
-			      onsubmit="return confirm('ログアウトしますか？')">
-                <button type="submit" class="logout-btn">
+            <form action="/logout"
+                  method="get"
+                  onsubmit="return confirm('ログアウトしますか？')">
+
+                <button type="submit"
+                        class="logout-btn">
                     ログアウト
                 </button>
+
             </form>
 
         </div>
 
     </div>
 
-    <!-- 현재 포인트 -->
+    <!-- 포인트 -->
     <div class="point-area">
 
         現在のポイント　${point}
@@ -178,95 +182,117 @@ body {
 
     <div class="main-area">
 
-        <!-- 숨긴 숫자 -->
         <div class="hidden-number">
 
             隠れ数字：＊＊＊
 
         </div>
 
-        <!-- 입력 -->
-		<form action="/game" method="post">
+        <!-- 게임 입력 form -->
+        <form action="/game" method="post">
+
         <div class="input-row">
 
             入力
 
-            <input type="text" class="number-input"
-			name="input_num0" maxlength="1">
-			
-            <input type="text" class="number-input"
-			name="input_num1" maxlength="1">
-            
-			<input type="text" class="number-input"
-			name="input_num2" maxlength="1">
+            <input type="text"
+                   class="number-input"
+                   name="input_num0"
+                   maxlength="1"
+                   ${sessionScope.gameEnd ? "disabled" : ""}>
 
-            <button type="submit" class="confirm-btn">
+            <input type="text"
+                   class="number-input"
+                   name="input_num1"
+                   maxlength="1"
+                   ${sessionScope.gameEnd ? "disabled" : ""}>
+
+            <input type="text"
+                   class="number-input"
+                   name="input_num2"
+                   maxlength="1"
+                   ${sessionScope.gameEnd ? "disabled" : ""}>
+
+            <button type="submit"
+                    class="confirm-btn"
+                    ${sessionScope.gameEnd ? "disabled" : ""}>
                 確認
             </button>
-			
+
         </div>
-		
-		</form>
-		
+
+        </form>
+
+        <!-- ⭐ 新ゲーム 버튼 -->
+        <c:if test="${sessionScope.gameEnd}">
+            <button type="button"
+                    class="confirm-btn"
+                    onclick="location.href='/newGame'">
+                新ゲーム
+            </button>
+        </c:if>
+
 
         <!-- 결과 테이블 -->
-		<table class="result-table">
+        <table class="result-table">
 
-		<tr>
-		    <th>入力回数</th>
-		    <th>入力数字</th>
-		    <th>判定結果</th>
-		</tr>
+        <tr>
+            <th>入力回数</th>
+            <th>入力数字</th>
+            <th>判定結果</th>
+        </tr>
 
-		<%
-		List<String> inputList =
-		    (List<String>) request.getAttribute("inputList");
+<%
+List<String> inputList =
+    (List<String>) request.getAttribute("inputList");
 
-		List<String> resultList =
-		    (List<String>) request.getAttribute("resultList");
+List<String> resultList =
+    (List<String>) request.getAttribute("resultList");
 
-		if(inputList == null){
-		    inputList = new ArrayList<>();
-		}
+if(inputList == null){
+    inputList = new ArrayList<>();
+}
 
-		if(resultList == null){
-		    resultList = new ArrayList<>();
-		}
+if(resultList == null){
+    resultList = new ArrayList<>();
+}
 
-		for(int i=0;i<10;i++){
-		%>
+for(int i=0;i<10;i++){
+%>
 
-		<tr>
+<tr>
 
-		<td><%= i+1 %>回目</td>
+<td><%= i+1 %>回目</td>
 
-		<td>
-		<%= (i < inputList.size())
-		        ? inputList.get(i)
-		        : "" %>
-		</td>
+<td>
+<%= (i < inputList.size())
+        ? inputList.get(i)
+        : "" %>
+</td>
 
-		<td>
-		<%= (i < resultList.size())
-		        ? resultList.get(i)
-		        : "" %>
-		</td>
+<td>
+<%= (i < resultList.size())
+        ? resultList.get(i)
+        : "" %>
+</td>
 
-		</tr>
+</tr>
 
-		<%
-		}
-		%>
+<%
+}
+%>
 
-		</table>
+        </table>
 
     </div>
 
 </div>
+
 <c:if test="${not empty errMsg}">
 <script>
     alert("${errMsg}");
 </script>
 </c:if>
+
 </body>
 </html>
