@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.mapper.ResultMapper">
+
+    <!-- ========================= -->
+    <!-- 1️⃣ 당일 게임 횟수 조회 -->
+    <!-- ========================= -->
+    <select id="countTodayGame"
+            parameterType="string"
+            resultType="int">
+
+        SELECT COUNT(*)
+        FROM RESULTINFO
+        WHERE member_id = #{memberId}
+        AND play_date = CURRENT_DATE
+
+    </select>
+
+
+    <!-- ========================= -->
+    <!-- 2️⃣ 전일 게임 횟수 조회 -->
+    <!-- ========================= -->
+    <select id="countYesterdayGame"
+            parameterType="string"
+            resultType="int">
+
+        SELECT COUNT(*)
+        FROM RESULTINFO
+        WHERE member_id = #{memberId}
+        AND play_date = CURRENT_DATE - INTERVAL '1 day'
+
+    </select>
+
+
+    <!-- ========================= -->
+    <!-- 3️⃣ 게임 결과 저장 (INSERT) -->
+    <!-- ========================= -->
+    <insert id="insertResult">
+
+        INSERT INTO RESULTINFO (
+            member_id,
+            play_date,
+            game_count,
+            input_num,
+            result
+        )
+        VALUES (
+            #{memberId},
+            #{playDate},
+            #{gameCount},
+            #{inputNum},
+            #{result}
+        )
+
+    </insert>
+
+	<!-- ⭐ 포인트 조회 -->
+	<select id="getPoint"
+        parameterType="string"
+        resultType="int">
+
+    SELECT point
+    FROM pointinfo
+    WHERE member_id = #{memberId}
+
+</select>
+<update id="updatePoint">
+
+UPDATE pointinfo
+SET point = #{point}
+WHERE member_id = #{memberId}
+
+</update>
+
+</mapper>
