@@ -220,7 +220,12 @@ body {
             </button>
 
         </div>
-
+			<!-- 🔴 에러 메시지 (입력칸 바로 밑) -->
+				<c:if test="${not empty errMsg}">
+		    	<div style="color:red; margin-top:8px;">
+		        	${errMsg}
+		    		</div>
+				</c:if>
         </form>
 
         <!-- ⭐ 新ゲーム 버튼 -->
@@ -274,25 +279,21 @@ for(int i=0;i<10;i++){
 <%= (i < resultList.size())
         ? resultList.get(i)
         : "" %>
-</td>
+	</td>
+	</tr>
+		<%
+		}
+		%>
 
-</tr>
-
-<%
-}
-%>
-
-        </table>
-
+       </table>
     </div>
-
 </div>
 
-<c:if test="${not empty errMsg}">
-<script>
-    alert("${errMsg}");
-</script>
-</c:if>
+	<c:if test="${not empty popupMsg}">
+		<script>
+    	alert("${popupMsg}");
+		</script>
+	</c:if>
 
 </body>
 </html>

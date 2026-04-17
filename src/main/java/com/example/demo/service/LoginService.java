@@ -3,8 +3,9 @@ package com.example.demo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.DAO.UserDAO;
 import com.example.demo.DTO.UserDTO;
-import com.example.demo.mapper.UserDAO;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

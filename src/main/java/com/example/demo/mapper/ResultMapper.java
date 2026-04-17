@@ -20,12 +20,13 @@ public interface ResultMapper {
     
     // 게임 결과 저장
     int insertResult(
-        @Param("memberId") String memberId,
-        @Param("playDate") java.sql.Date playDate,
-        @Param("gameCount") int gameCount,
-        @Param("inputNum") String inputNum,
-        @Param("result") String result
-    );
+    	    @Param("memberId") String memberId,
+    	    @Param("playDate") java.sql.Date playDate,
+    	    @Param("gameCount") int gameCount,
+    	    @Param("inputNum") String inputNum,
+    	    @Param("result") String result,
+    	    @Param("hiddenNum") String hiddenNum
+    	);
     void updatePoint(
     	    String memberId,
     	    int point

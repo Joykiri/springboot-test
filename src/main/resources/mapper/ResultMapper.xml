@@ -38,21 +38,23 @@
     <!-- ========================= -->
     <!-- 3️⃣ 게임 결과 저장 (INSERT) -->
     <!-- ========================= -->
-    <insert id="insertResult">
+<insert id="insertResult" parameterType="map">
 
         INSERT INTO RESULTINFO (
             member_id,
             play_date,
             game_count,
             input_num,
-            result
+            result,
+            hidden_num
         )
         VALUES (
             #{memberId},
             #{playDate},
             #{gameCount},
             #{inputNum},
-            #{result}
+            #{result},
+            #{hiddenNum}
         )
 
     </insert>
@@ -65,8 +67,7 @@
     SELECT point
     FROM pointinfo
     WHERE member_id = #{memberId}
-
-</select>
+	</select>
 <update id="updatePoint">
 
 UPDATE pointinfo

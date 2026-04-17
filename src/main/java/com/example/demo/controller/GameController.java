@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,32 +27,20 @@ public class GameController {
     public String initGame(
             HttpSession session,
             Model model) {
+    	
+        String userId = (String)session.getAttribute("user_id");
 
-        String userId =
-            (String)session.getAttribute("user_id");
-
-        Integer point =
-            (Integer)session.getAttribute("point");
+        Integer point = (Integer)session.getAttribute("point");
 
         if(point == null){
 
-            point =
-                gameService.getPoint(userId);
-
-            session.setAttribute(
-                "point",
-                point
-            );
+            point = gameService.getPoint(userId);
+            session.setAttribute("point", point);
         }
 
-        model.addAttribute(
-            "point",
-            point
-        );
-
+        model.addAttribute("point",point);
         return "game";
     }
-
 
 
     // ===== 2. 게임 실행 =====
@@ -64,6 +53,12 @@ public class GameController {
 
             HttpSession session,
             Model model) {
+    	
+    	model.addAttribute("inputList",
+    	        session.getAttribute("inputList"));
+
+    	    model.addAttribute("resultList",
+    	        session.getAttribute("resultList"));
 
         // =========================
         // ⭐ 총 게임 종료 체크 추가
@@ -73,63 +68,39 @@ public class GameController {
 
         if(gameRound == null){
             gameRound = 1;
-            session.setAttribute(
-                "gameRound",
-                gameRound
-            );
+            session.setAttribute("gameRound", gameRound);
         }
 
         if(gameRound > 10){
 
-            model.addAttribute(
-                "errMsg",
-                "今日のゲームを終了します。"
-            );
+            model.addAttribute("errMsg","今日のゲームを終了します。");
 
-            session.setAttribute(
-                "gameEnd",
-                true
-            );
-
+            session.setAttribute("gameEnd",true);
             return "game";
         }
 
 
 
         // ===== 입력 숫자 합치기 =====
-        String input =
-            n0 + n1 + n2;
+        String input = n0 + n1 + n2;
 
 
-        // ===== ERROR 204 =====
-        if(
-            (n0.equals("") && n1.equals("") && n2.equals("")) ||
-
-            n0.matches("[A-Za-zぁ-んァ-ヶ].*") ||
-            n1.matches("[A-Za-zぁ-んァ-ヶ].*") ||
-            n2.matches("[A-Za-zぁ-んァ-ヶ].*")
-        ){
-            model.addAttribute(
-                "errMsg",
-                "数字を入力してください。"
-            );
+     // ===== ERROR 204 =====
+        if(n0.equals("") && n1.equals("") && n2.equals("")){
+            model.addAttribute("errMsg","数字を入力してください。");
             return "game";
         }
 
 
         // ===== ERROR 201 =====
         if(
-            n0.matches("[０-９]") ||
-            n1.matches("[０-９]") ||
-            n2.matches("[０-９]")
+            (!n0.equals("") && !n0.matches("[0-9]")) ||
+            (!n1.equals("") && !n1.matches("[0-9]")) ||
+            (!n2.equals("") && !n2.matches("[0-9]"))
         ){
-            model.addAttribute(
-                "errMsg",
-                "半角数字を入力してください。"
-            );
+            model.addAttribute("errMsg","半角数字を入力してください。");
             return "game";
         }
-
 
         // ===== ERROR 202 =====
         if(
@@ -137,10 +108,7 @@ public class GameController {
             n1.equals("") ||
             n2.equals("")
         ){
-            model.addAttribute(
-                "errMsg",
-                "3桁の数字を入力してください。"
-            );
+            model.addAttribute("errMsg","3桁の数字を入力してください。");
             return "game";
         }
 
@@ -151,16 +119,12 @@ public class GameController {
             n0.equals(n2) ||
             n1.equals(n2)
         ){
-            model.addAttribute(
-                "errMsg",
-                "異なる桁に同じ数字は入力できません。"
-            );
+            model.addAttribute("errMsg","異なる桁に同じ数字は入力できません。");
             return "game";
         }
 
-
-
         // ===== 숨은 숫자 =====
+     // ===== 숨은 숫자 =====
         String hidden =
             (String)session.getAttribute("hidden");
 
@@ -169,14 +133,13 @@ public class GameController {
             hidden =
                 gameService.createHiddenNumber();
 
-            session.setAttribute(
-                "hidden",
-                hidden
-            );
+            session.setAttribute("hidden", hidden);
         }
 
+        String hiddenNum = hidden;
 
-
+        System.out.println("hidden 확인 = " + hidden);
+    
         // ===== 게임 횟수 =====
         Integer count =
             (Integer)session.getAttribute("count");
@@ -186,75 +149,47 @@ public class GameController {
         }
 
         count++;
-
-        session.setAttribute(
-            "count",
-            count
-        );
-
-
+        session.setAttribute("count",count);
 
         // ===== 판정 =====
-        String result =
-            gameService.judgeNumber(
-                input,
-                hidden
-            );
+        String result = gameService.judgeNumber(input,hidden);
 
-     // ===== DB 저장 추가 ⭐⭐⭐
-        String memberId =
-            (String)session.getAttribute("user_id");
+        // ===== DB 저장 추가 ⭐⭐⭐
+        String memberId =(String)session.getAttribute("user_id");
 
         java.sql.Date today =
-            new java.sql.Date(
-                System.currentTimeMillis()
-            );
-
+            new java.sql.Date(System.currentTimeMillis());
+        System.out.println("hiddenNum 확인 = " + hiddenNum);
         gameService.insertResult(
             memberId,
             today,
             count,
             input,
-            result
+            result,
+            hidden
         );
 
         // ===== 리스트 =====
         List<String> inputList =
             (List<String>)session.getAttribute("inputList");
 
-        if(inputList == null){
-            inputList = new ArrayList<>();
+        if(inputList == null){inputList = new ArrayList<>();
         }
 
-        List<String> resultList =
-            (List<String>)session.getAttribute("resultList");
+        List<String> resultList =(List<String>)session.getAttribute("resultList");
 
-        if(resultList == null){
-            resultList = new ArrayList<>();
-        }
+        if(resultList == null){resultList = new ArrayList<>();}
 
         inputList.add(input);
         resultList.add(result);
 
-        session.setAttribute(
-            "inputList",
-            inputList
-        );
+        session.setAttribute("inputList",inputList);
 
-        session.setAttribute(
-            "resultList",
-            resultList
-        );
+        session.setAttribute("resultList",resultList);
 
-        model.addAttribute(
-            "inputList",
-            inputList
-        );
+        model.addAttribute("inputList",inputList);
 
-        model.addAttribute(
-            "resultList",
-            resultList
-        );
+        model.addAttribute("resultList", resultList);
 
 
 
@@ -266,23 +201,19 @@ public class GameController {
 
             if(count <= 5){
                 addPoint = 1000;
-                msg =
-                    "挑戦に成功！1000ポイント！";
+                msg ="挑戦に成功！1000ポイント！";
             }
             else if(count <= 7){
                 addPoint = 500;
-                msg =
-                    "挑戦に成功！500ポイント！";
+                msg ="挑戦に成功！500ポイント！";
             }
             else{
                 addPoint = 200;
-                msg =
-                    "挑戦に成功！200ポイント！";
+                msg ="挑戦に成功！200ポイント！";
             }
 
 
-            Integer currentPoint =
-                (Integer)session.getAttribute("point");
+            Integer currentPoint =(Integer)session.getAttribute("point");
 
             if(currentPoint == null){
                 currentPoint = 0;
@@ -290,32 +221,17 @@ public class GameController {
 
             currentPoint += addPoint;
 
-            session.setAttribute(
-                "point",
-                currentPoint
-            );
+            session.setAttribute("point",currentPoint);
 
             // ⭐ DB 포인트 저장
-            gameService.updatePoint(
-                memberId,
-                currentPoint
-            );
+            gameService.updatePoint(memberId,currentPoint);
 
 
-            model.addAttribute(
-                "point",
-                currentPoint
-            );
+            model.addAttribute("point",currentPoint);
 
-            model.addAttribute(
-                "errMsg",
-                msg
-            );
+            model.addAttribute("popupMsg",msg);
 
-            session.setAttribute(
-                "gameEnd",
-                true
-            );
+            session.setAttribute("gameEnd",true);
 
             return "game";
         }
@@ -325,23 +241,14 @@ public class GameController {
         // ===== 10회 실패 =====
         if(count >= 10){
 
-            model.addAttribute(
-                "errMsg",
-                "挑戦に失敗しました…"
-            );
+            model.addAttribute("errMsg","挑戦に失敗しました…");
 
-            session.setAttribute(
-                "gameEnd",
-                true
-            );
+            session.setAttribute("gameEnd",true);
 
             Integer currentPoint =
                 (Integer)session.getAttribute("point");
 
-            model.addAttribute(
-                "point",
-                currentPoint
-            );
+            model.addAttribute("point",currentPoint);
 
             return "game";
         }
@@ -366,10 +273,7 @@ public class GameController {
 
         gameRound++;
 
-        session.setAttribute(
-            "gameRound",
-            gameRound
-        );
+        session.setAttribute("gameRound", gameRound);
 
 
         // 기존 초기화
@@ -383,18 +287,38 @@ public class GameController {
     }
 
 
+        // ⭐ DB 접속 실패만 따로 처리
+        @ExceptionHandler(Exception.class)
+        public String handleException(
+                Exception e,
+                Model model,
+                HttpSession session){
 
-    // ===== 에러 처리 =====
-    @ExceptionHandler(Exception.class)
-    public String handleException(Exception e){
+            e.printStackTrace();
 
-        System.out.println(
-            "[002] システムエラーが発生しました。"
-        );
+            String msg = e.toString();
 
-        e.printStackTrace();
+            // ⭐ DB 관련 에러 전부 묶기 (라이브러리 추가 없이)
+            if(msg.contains("jdbc")
+                || msg.contains("SQL")
+                || msg.contains("postgres")
+                || msg.contains("Connection")
+                || msg.contains("BadSqlGrammar")
+                || msg.contains("PSQLException")){
+                System.out.println("データベースへの接続に失敗しました。");
 
-        return "game";
-    }
+                model.addAttribute("errMsg","データベースへの接続に失敗しました。");
 
+            }
+            else{
+
+                System.out.println("システムエラーが発生しました。");
+
+                model.addAttribute("errMsg","システムエラーが発生しました。");
+            }
+
+            session.setAttribute("gameEnd",true);
+
+            return "game";
+        }
 }
